@@ -1,19 +1,19 @@
 Shopping List App
 
-Una semplice applicazione web per creare e gestire una lista della spesa, sviluppata con HTML, CSS, JavaScript e Firebase Realtime Database.
+Una semplice applicazione web per creare e gestire una lista della spesa, sviluppata con HTML, CSS e JavaScript.
 
-L’applicazione permette di aggiungere prodotti alla lista, salvarli all’interno di un database Firebase e cancellare l’intera lista quando necessario.
+L’applicazione permette di aggiungere prodotti alla propria lista, conservarli anche dopo la chiusura o il refresh della pagina e cancellare l’intera lista quando necessario.
 
 Il progetto è inoltre configurato per essere installato su dispositivi mobile come Web App, con icona personalizzata e visualizzazione standalone.
 
 Funzionalità
 
 * Aggiunta di nuovi prodotti alla lista
-* Salvataggio dei prodotti tramite Firebase Realtime Database
-* Aggiornamento automatico della lista quando i dati nel database cambiano
+* Salvataggio dei prodotti tramite localStorage
+* Persistenza dei dati anche dopo il refresh o la chiusura della pagina
+* Lista indipendente per ogni utente/browser
 * Eliminazione di tutti i prodotti
-* Persistenza dei dati grazie a Firebase
-* Interfaccia responsive adatta anche a dispositivi mobile
+* Interfaccia responsive adatta ai dispositivi mobile
 * Possibilità di aggiungere l’app alla schermata Home
 * Apertura dell’app in modalità standalone
 * Icona personalizzata per dispositivi iOS e Android
@@ -23,26 +23,76 @@ Tecnologie utilizzate
 * HTML5 — struttura della pagina
 * CSS3 — stile e layout responsive
 * JavaScript — logica dell’applicazione e manipolazione del DOM
-* Firebase Realtime Database — salvataggio e sincronizzazione dei dati
+* localStorage — salvataggio locale e persistenza della lista
+* JSON — conversione dei dati per il salvataggio e il recupero dal localStorage
 * Web App Manifest — configurazione dell’app per dispositivi mobile
 * Git & GitHub — versionamento e pubblicazione del progetto
 
-Integrazione con Firebase
+Gestione dei dati con localStorage
 
-Il progetto utilizza Firebase Realtime Database per salvare gli elementi della lista della spesa.
+La versione attuale dell’applicazione utilizza il localStorage del browser per salvare gli elementi della lista.
 
-Tra i principali metodi Firebase utilizzati:
+Quando viene aggiunto un nuovo prodotto, questo viene inserito nell’array items:
 
-* initializeApp() — inizializza Firebase
-* getDatabase() — permette di accedere al database
-* ref() — crea un riferimento alla sezione items del database
-* push() — aggiunge un nuovo prodotto
-* onValue() — ascolta i cambiamenti del database e aggiorna la lista
-* remove() — elimina tutti i prodotti salvati
+items.push(inputEl.value)
 
-I dati ricevuti da Firebase vengono trasformati in un array tramite:
+L’array viene successivamente convertito in una stringa JSON e salvato nel localStorage:
 
-Object.values(snapshotValues) e successivamente mostrati dinamicamente nella pagina.
+localStorage.setItem("items", JSON.stringify(items))
+
+All’apertura dell’applicazione, i dati vengono recuperati e riconvertiti in un array JavaScript:
+
+let itemsFromLocalStorage = JSON.parse(
+    localStorage.getItem("items")
+)
+
+In questo modo la lista rimane disponibile anche dopo aver chiuso o ricaricato la pagina.
+
+Inoltre, poiché il localStorage appartiene al singolo browser, utenti diversi non condividono automaticamente la stessa lista.
+
+
+Evoluzione del progetto: da Firebase a localStorage
+
+La prima versione della Shopping List App utilizzava Firebase Realtime Database per salvare i prodotti.
+
+La connessione al database utilizzava un unico riferimento:
+
+const referenceInDB = ref(database, "items")
+
+I prodotti venivano aggiunti tramite: push(referenceInDB, inputEl.value)
+e recuperati in tempo reale utilizzando:
+onValue(referenceInDB, function(snapshot) {
+    // recupero dei dati
+})
+
+Questa soluzione permetteva di salvare i dati online e sincronizzarli in tempo reale.
+
+Tuttavia, tutti gli utenti dell’applicazione utilizzavano lo stesso percorso items del database Firebase.
+
+Di conseguenza:
+
+Utente A → aggiunge "Latte"
+                  ↓
+           Firebase /items
+                  ↓
+Utente B → vede "Latte"
+
+Questo significava che tutti gli utenti condividevano la stessa lista della spesa.
+
+Per risolvere il problema, ho deciso di modificare il sistema di persistenza utilizzando localStorage.
+
+La struttura attuale è quindi:
+
+Utente A
+└── localStorage
+    └── ["Latte", "Pane"]
+Utente B
+└── localStorage
+    └── ["Pasta", "Acqua"]
+
+In questo modo ogni utente può utilizzare l’applicazione mantenendo una lista personale e indipendente dagli altri utenti.
+
+Questa modifica mi ha permesso anche di comprendere meglio la differenza tra il salvataggio dei dati in un database remoto condiviso e il salvataggio locale all’interno del browser.
 
 Versione Mobile
 
@@ -70,40 +120,47 @@ In questo modo l’app può essere aggiunta alla schermata Home di uno smartphon
 
 Cosa ho imparato
 
-Durante la realizzazione di questo progetto ho approfondito:
+Durante la realizzazione e il miglioramento di questo progetto ho approfondito:
 
-* Collegamento di un’applicazione JavaScript a Firebase
-* Utilizzo di Firebase Realtime Database
-* Salvataggio, lettura ed eliminazione dei dati
-* Utilizzo dei riferimenti al database
 * Manipolazione del DOM con JavaScript
-* Rendering dinamico della lista
-* Utilizzo di array e oggetti JavaScript
-* Utilizzo di Object.values()
+* Rendering dinamico di una lista
+* Utilizzo di array JavaScript
+* Utilizzo di localStorage
+* Persistenza dei dati nel browser
+* Utilizzo di JSON.stringify()
+* Utilizzo di JSON.parse()
 * Gestione degli eventi con addEventListener()
-* Utilizzo dei moduli JavaScript
+* Differenza tra salvataggio locale e database remoto
+* Utilizzo di Firebase Realtime Database nella prima versione
+* Individuazione e risoluzione di un problema legato alla condivisione dei dati tra utenti
 * Creazione di un’interfaccia responsive
 * Configurazione di una Web App per dispositivi mobile
 * Utilizzo del file site.webmanifest
 * Gestione di favicon e icone per iOS e Android
 
+Struttura del progetto
 
-Funzionamento
+
+Come utilizzare l’app
 
 1. Inserisci il nome di un prodotto nel campo di testo.
 2. Premi ADD ITEM.
-3. Il prodotto viene salvato nel database Firebase.
-4. Firebase aggiorna automaticamente la lista visualizzata.
-5. Continua ad aggiungere tutti i prodotti necessari.
-6. Premi DELETE ALL per eliminare tutti i prodotti dal database e svuotare la lista.
+3. Il prodotto viene aggiunto alla lista e salvato nel localStorage.
+4. Continua ad aggiungere tutti i prodotti necessari.
+5. Chiudendo o ricaricando la pagina, i prodotti rimangono salvati.
+6. Premi DELETE ALL per eliminare tutti i prodotti e svuotare la lista.
 
 Su un dispositivo mobile è inoltre possibile aggiungere la Web App alla schermata Home per utilizzarla in modo simile a un’applicazione installata.
 
 Obiettivo del progetto
 
-L’obiettivo principale di questo progetto è stato approfondire l’integrazione tra JavaScript e Firebase Realtime Database, comprendendo come un’applicazione frontend possa salvare, recuperare, sincronizzare ed eliminare dati.
+L’obiettivo del progetto è stato creare una semplice applicazione frontend per la gestione di una lista della spesa, approfondendo la manipolazione del DOM e la persistenza dei dati con JavaScript.
 
-Successivamente il progetto è stato adattato per l’utilizzo su dispositivi mobile, aggiungendo un Web App Manifest, icone dedicate e una modalità di visualizzazione standalone.
+Il progetto inizialmente utilizzava Firebase Realtime Database, ma durante lo sviluppo ho individuato il problema della condivisione della stessa lista tra tutti gli utenti.
+
+Ho quindi modificato l’architettura dell’applicazione utilizzando localStorage, permettendo a ogni utente di mantenere una propria lista indipendente.
+
+Questo processo mi ha permesso non solo di implementare nuove funzionalità, ma anche di analizzare un problema reale dell’applicazione e scegliere una soluzione più adatta al suo funzionamento.
 
 
 Progetto realizzato durante il mio percorso di formazione per diventare Frontend Developer.
