@@ -24,11 +24,22 @@ if (itemsFromLocalStorage) {
     render(items)
 }
 
+function escapeHtml(text) {
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;")
+}
+
 function render(items) {
     let listItems = ""
     for (let i = 0; i < items.length; i++) {
-        listItems += `<li>    
-                            ${items[i]}
+        const itemText = escapeHtml(items[i])
+        listItems += `<li>
+                            <span class="item-text">${itemText}</span>
+                            <button class="delete-item-btn" data-index="${i}" aria-label="Delete ${itemText}">&times;</button>
                      </li>`
     }
     ulEl.innerHTML = listItems
