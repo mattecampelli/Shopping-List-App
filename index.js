@@ -51,6 +51,20 @@ addBtn.addEventListener("click", function() {
     render(items)
 })
 
+ulEl.addEventListener("click", function(event) {
+    const deleteItemBtn = event.target.closest(".delete-item-btn")
+    if (!deleteItemBtn) {
+        return
+    }
+    const index = Number(deleteItemBtn.dataset.index)
+    if (!Number.isInteger(index) || index < 0 || index >= items.length) {
+        return
+    }
+    items.splice(index, 1)
+    localStorage.setItem("items", JSON.stringify(items))
+    render(items)
+})
+
 deleteBtn.addEventListener("click", function() {
     // remove(referenceInDB)
     ulEl.innerHTML = ""
