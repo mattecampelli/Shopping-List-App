@@ -74,6 +74,13 @@ ulEl.addEventListener("click", function(event) {
     items.splice(index, 1)
     localStorage.setItem("items", JSON.stringify(items))
     render(items)
+    const deleteBtns = ulEl.querySelectorAll(".delete-item-btn")
+    if (deleteBtns.length > 0) {
+        const nextIndex = Math.min(index, deleteBtns.length - 1)
+        deleteBtns[nextIndex].focus()
+    } else {
+        inputEl.focus()
+    }
 })
 
 deleteBtn.addEventListener("click", function() {
