@@ -8,7 +8,8 @@ Il progetto è inoltre configurato per essere installato su dispositivi mobile c
 
 Funzionalità
 
-* Aggiunta di nuovi prodotti alla lista
+* Aggiunta di nuovi prodotti alla lista, anche premendo Invio (submit tramite form)
+* Animazione di comparsa per ogni nuovo prodotto aggiunto alla lista
 * Salvataggio dei prodotti tramite localStorage
 * Persistenza dei dati anche dopo il refresh o la chiusura della pagina
 * Lista indipendente per ogni utente/browser
@@ -130,6 +131,8 @@ Durante la realizzazione e il miglioramento di questo progetto ho approfondito:
 * Utilizzo di JSON.stringify()
 * Utilizzo di JSON.parse()
 * Gestione degli eventi con addEventListener()
+* Gestione del submit di un form e differenza tra l'evento submit (sul form) e click (sul bottone)
+* Creazione di transizioni CSS per l'inserimento dinamico di elementi nel DOM
 * Differenza tra salvataggio locale e database remoto
 * Utilizzo di Firebase Realtime Database nella prima versione
 * Individuazione e risoluzione di un problema legato alla condivisione dei dati tra utenti
@@ -140,12 +143,19 @@ Durante la realizzazione e il miglioramento di questo progetto ho approfondito:
 
 Struttura del progetto
 
+* index.html — struttura della pagina
+* style.css — stile e layout
+* index.js — logica dell’applicazione
+* site.webmanifest — configurazione della Web App
+* android-chrome-192x192.png, android-chrome-512x512.png, apple-touch-icon.png, favicon-16x16.png, favicon-32x32.png, favicon.ico — icone per browser e dispositivi
+* .gitignore — file e cartelle esclusi dal versionamento (es. configurazioni locali di editor/tool)
+* README.md — documentazione del progetto
 
 Come utilizzare l’app
 
 1. Inserisci il nome di un prodotto nel campo di testo.
-2. Premi ADD ITEM.
-3. Il prodotto viene aggiunto alla lista e salvato nel localStorage.
+2. Premi ADD ITEM oppure premi Invio.
+3. Il prodotto viene aggiunto alla lista con una piccola animazione e salvato nel localStorage.
 4. Continua ad aggiungere tutti i prodotti necessari.
 5. Chiudendo o ricaricando la pagina, i prodotti rimangono salvati.
 6. Premi DELETE ALL per eliminare tutti i prodotti e svuotare la lista.

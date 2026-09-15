@@ -11,12 +11,19 @@
             <script type="module" src="index.js" defer></script>
         </head>
         <body>
-            <h1>Shopping List</h1>
-            <input type="text" id="input-el" placeholder="Enter item">
-            <div id="btn-container">
-                <button id="add-btn">ADD ITEM</button>
-                <button id="delete-btn">DELETE ALL</button>
+            <div class="blob-1"></div>
+            <div class="blob-2"></div>
+            <div class="blob-3"></div>
+            <div class="container">
+                <h1>Shopping List</h1>
+                <form id="form">
+                    <input type="text" id="input-el" placeholder="Enter item">
+                    <div id="btn-container">
+                        <button id="add-btn" type="submit">ADD ITEM</button>
+                        <button type="button" id="delete-btn">DELETE ALL</button>
+                    </div>
+                </form>
+                <ul id="ul-el"></ul>
             </div>
-            <ul id="ul-el"></ul>
         </body>
     </html>

@@ -16,6 +16,7 @@ const addBtn = document.getElementById("add-btn")
 const deleteBtn = document.getElementById("delete-btn")
 const ulEl = document.getElementById("ul-el")
 const inputEl = document.getElementById("input-el")
+const form = document.getElementById("form")
 let items = []
 let itemsFromLocalStorage = JSON.parse(localStorage.getItem("items"))
 
@@ -25,13 +26,25 @@ if (itemsFromLocalStorage) {
 }
 
 function render(items) {
-    let listItems = ""
+    ulEl.innerHTML = ""
     for (let i = 0; i < items.length; i++) {
-        listItems += `<li>    
-                            ${items[i]}
-                     </li>`
+        const li = document.createElement("li")
+        li.textContent = items[i]
+        ulEl.append(li)
     }
-    ulEl.innerHTML = listItems
+}
+
+function addItemToDOM(item) {
+    const li = document.createElement("li")
+    li.textContent = item
+    li.style.opacity = "0"
+    li.style.transform = "translateY(10px)"
+    ulEl.append(li)
+
+    setTimeout(function() {
+        li.style.opacity = "1"
+        li.style.transform = "translateY(0)"
+    }, 10)
 }
 
 // onValue(referenceInDB, function(snapshot) {
@@ -43,12 +56,15 @@ function render(items) {
 //     }
 // })
 
-addBtn.addEventListener("click", function() {
+form.addEventListener("submit", function(e) {
+    e.preventDefault()
     // push(referenceInDB, inputEl.value)
-    items.push(inputEl.value)
-    inputEl.value = ""
-    localStorage.setItem("items", JSON.stringify(items))
-    render(items)
+    if (inputEl.value) {
+        items.push(inputEl.value)
+        addItemToDOM(inputEl.value)
+        inputEl.value = ""
+        localStorage.setItem("items", JSON.stringify(items))
+    }
 })
 
 deleteBtn.addEventListener("click", function() {

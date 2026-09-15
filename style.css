@@ -1,12 +1,27 @@
 body {
+    display: flex;
+    flex-direction: column;
     margin: 0 auto;
     font-family: Arial, Helvetica, sans-serif;
-    padding: 10px;
-    max-width: 302px;
-    background-color: rgb(236, 236, 232);
+    font-size: 1.08em;
+    padding: 12px;
+    max-width: 500px;
+    min-height: 100vh;
+    box-sizing: border-box;
+    background-color: rgb(204, 218, 245);
+}
+
+.container {
+    margin: auto;
+    background-color: whitesmoke;
+    padding: 40px 10px;
+    border-radius: 10px;
+    width: 100%;
+    box-shadow: 0px 0px 5px 3px rgb(201, 199, 199);
 }
 
 h1 {
+    font-size: 1.7em;
     text-align: center;
     color: #f1caf0;
     text-shadow: 0px 0px 3px rgb(239, 9, 9);
@@ -16,21 +31,21 @@ input {
     margin: 10px auto;
     width: 100%;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 12px;
     border: 2px solid #f1caf0;
-    border-radius: 4px;
+    border-radius: 8px;
 }
 
 #btn-container {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     justify-content: center;
     align-items: center;
     width: 100%;
 }
 
 #add-btn, #delete-btn {
-    padding: 10px 20px;
+    padding: 12px 22px;
     background-color: #f1caf0;
     border: 1px solid #f1caf0;
     border-radius: 4px;
@@ -42,10 +57,11 @@ input {
 li {
     list-style-type: none;
     background-color: white;
-    padding: 10px;
+    padding: 12px;
     border-radius: 4px;
     box-shadow: 0px 0px 5px #e7d1e6;
     border: 2px solid #e4cae3;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 button {
@@ -55,7 +71,7 @@ button {
 #ul-el {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
     list-style: none;
     padding: 0;
     margin: 10px 0;
@@ -64,4 +80,39 @@ button {
 #add-btn:hover, #delete-btn:hover {
     background-color: #ffa200;
     border: 4px solid #ffa200;
+    transition: all 0.5s ease;
+}
+
+.blob-1 {
+    position: absolute;
+    top: -100px;
+    left: -50px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background-color: #bff1bd;
+    box-shadow: 0px 0px 20px #bff1bd;
+}
+
+.blob-2 {
+    position: absolute;
+    top: 300px;
+    right: 0px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background-color: #f1caf0;
+    box-shadow: 0px 0px 20px #f1caf0;
+    z-index: -1;
+}
+
+.blob-3 {
+    position: absolute;
+    bottom: -50px;
+    left: -100px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background-color: #e7d1e6;
+    box-shadow: 0px 0px 20px #e7d1e6;
 }
