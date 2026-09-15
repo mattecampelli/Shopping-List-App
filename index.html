@@ -1,22 +1,37 @@
 <!DOCTYPE html>
-    <html>
-        <head>
-            <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-            <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-            <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-            <link rel="manifest" href="/site.webmanifest">
-            <title>Shopping List App</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" href="style.css">
-            <script type="module" src="index.js" defer></script>
-        </head>
-        <body>
+<html lang="it">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest">
+        <title>Shopping List App</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+        <script type="module" src="index.js" defer></script>
+    </head>
+    <body>
+        <div class="background-blobs" aria-hidden="true">
+            <span class="blob blob-1"></span>
+            <span class="blob blob-2"></span>
+            <span class="blob blob-3"></span>
+        </div>
+
+        <main class="glass-card">
             <h1>Shopping List</h1>
-            <input type="text" id="input-el" placeholder="Enter item">
+
+            <div class="input-row">
+                <label for="input-el" class="visually-hidden">Aggiungi un articolo</label>
+                <input type="text" id="input-el" placeholder="Enter item">
+            </div>
+
             <div id="btn-container">
                 <button id="add-btn">ADD ITEM</button>
                 <button id="delete-btn">DELETE ALL</button>
             </div>
+
             <ul id="ul-el"></ul>
-        </body>
-    </html>
+        </main>
+    </body>
+</html>
