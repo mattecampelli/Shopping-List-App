@@ -92,6 +92,7 @@ button {
     border-radius: 50%;
     background-color: #bff1bd;
     box-shadow: 0px 0px 20px #bff1bd;
+    z-index: -3;
 }
 
 .blob-2 {
@@ -115,4 +116,5 @@ button {
     border-radius: 50%;
     background-color: #e7d1e6;
     box-shadow: 0px 0px 20px #e7d1e6;
+    z-index: -2;
 }
