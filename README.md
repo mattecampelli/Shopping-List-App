@@ -210,7 +210,6 @@ Durante la realizzazione e il miglioramento di questo progetto ho approfondito:
 * android-chrome-192x192.png, android-chrome-512x512.png, apple-touch-icon.png, favicon-16x16.png, favicon-32x32.png, favicon.ico — icone per browser e dispositivi
 * .gitignore — file e cartelle esclusi dal versionamento (es. configurazioni locali di editor/tool)
 * README.md — documentazione del progetto
-* CLAUDE.md — regole di lavoro per l’assistente AI Claude
 
 ## Come utilizzare l’app
 
