@@ -43,7 +43,8 @@ self.addEventListener("activate", function(e) {
 // 3. FETCH: parte ogni volta che la pagina chiede un file
 self.addEventListener("fetch", function(e) {
     e.respondWith(
-        caches.match(e.request).then(function(fileInCache) {
+        // ignoreSearch: true → ignora la parte dopo il "?" (es. ?utm_source=...)
+        caches.match(e.request, { ignoreSearch: true }).then(function(fileInCache) {
             // se il file è nella cache lo uso, altrimenti lo scarico da internet
             return fileInCache || fetch(e.request)
         })
