@@ -17,13 +17,14 @@ body {
     padding: 40px 10px;
     border-radius: 10px;
     width: 100%;
+    box-sizing: border-box;
     box-shadow: 0px 0px 5px 3px rgb(201, 199, 199);
 }
 
 h1 {
     font-size: 1.7em;
     text-align: center;
-    color: #f1caf0;
+    color: #c55bc1;
     text-shadow: 0px 0px 3px rgb(239, 9, 9);
 }
 
@@ -32,8 +33,10 @@ input {
     width: 100%;
     box-sizing: border-box;
     padding: 12px;
-    border: 2px solid #f1caf0;
+    border: 2px solid #c55bc1;
     border-radius: 8px;
+    background-color: white;
+    color: black;
 }
 
 #btn-container {
@@ -41,22 +44,25 @@ input {
     gap: 12px;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
     width: 100%;
 }
 
-#add-btn, #delete-btn {
+#add-btn, #select-btn, #delete-btn, #delete-selected-btn {
     padding: 12px 22px;
     background-color: #f1caf0;
     border: 1px solid #f1caf0;
     border-radius: 4px;
-    color: white;
+    color: #5c2359;
     cursor: pointer;
     font-weight: bold;
+    transition: all 0.5s ease;
 }
 
 li {
     list-style-type: none;
     background-color: white;
+    color: black;
     padding: 12px;
     border-radius: 4px;
     box-shadow: 0px 0px 5px #e7d1e6;
@@ -77,10 +83,9 @@ button {
     margin: 10px 0;
 }
 
-#add-btn:hover, #delete-btn:hover {
+#add-btn:hover, #select-btn:hover, #delete-btn:hover, #delete-selected-btn:hover {
     background-color: #ffa200;
     border: 4px solid #ffa200;
-    transition: all 0.5s ease;
 }
 
 .blob-1 {
@@ -117,4 +122,58 @@ button {
     background-color: #e7d1e6;
     box-shadow: 0px 0px 20px #e7d1e6;
     z-index: -2;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
+/* ---- Modalità "DELETE ITEM" ---- */
+
+/* Lo strato grigio: nascosto finché non si preme DELETE ITEM */
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(60, 60, 60, 0.6);
+    z-index: 1;
+}
+
+/* Il bottone in fondo: nascosto finché non si preme DELETE ITEM */
+#delete-selected-btn {
+    display: none;
+    margin: 10px auto 0;
+}
+
+/* Quando il body ha la classe "selection-mode"... */
+.selection-mode #overlay {
+    display: block;
+}
+
+.selection-mode #delete-selected-btn {
+    display: block;
+    position: relative;
+    z-index: 2;
+}
+
+/* ...le caselle della lista stanno sopra lo strato grigio */
+.selection-mode li {
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+}
+
+/* Casella selezionata: bordo più spesso (4px invece di 2px)
+   e padding più piccolo di 2px, così la casella resta grande uguale */
+li.selected {
+    border: 4px solid #c77f00;
+    padding: 10px;
 }

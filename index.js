@@ -12,8 +12,10 @@
 // const database = getDatabase(app)
 // const referenceInDB = ref(database, "items")
 
-const addBtn = document.getElementById("add-btn")
 const deleteBtn = document.getElementById("delete-btn")
+const selectBtn = document.getElementById("select-btn")
+const deleteSelectedBtn = document.getElementById("delete-selected-btn")
+const overlay = document.getElementById("overlay")
 const ulEl = document.getElementById("ul-el")
 const inputEl = document.getElementById("input-el")
 const form = document.getElementById("form")
@@ -69,8 +71,52 @@ form.addEventListener("submit", function(e) {
 
 deleteBtn.addEventListener("click", function() {
     // remove(referenceInDB)
-    ulEl.innerHTML = ""
+    if (!confirm("Vuoi davvero cancellare tutta la lista?")) {
+        return
+    }
     localStorage.clear()
     items = []
     render(items)
 })
+
+// 1. Premo DELETE ITEM: entro nella modalità selezione
+selectBtn.addEventListener("click", function() {
+    if (items.length > 0) {
+        document.body.classList.add("selection-mode")
+    }
+})
+
+// 2. Clicco su una casella della lista: la seleziono o la deseleziono
+ulEl.addEventListener("click", function(e) {
+    if (document.body.classList.contains("selection-mode") && e.target.tagName === "LI") {
+        e.target.classList.toggle("selected")
+    }
+})
+
+// 3. Premo DELETE SELECTED: tengo solo gli item NON selezionati
+deleteSelectedBtn.addEventListener("click", function() {
+    const liElements = ulEl.children
+    let itemsToKeep = []
+    for (let i = 0; i < liElements.length; i++) {
+        if (!liElements[i].classList.contains("selected")) {
+            itemsToKeep.push(items[i])
+        }
+    }
+    items = itemsToKeep
+    localStorage.setItem("items", JSON.stringify(items))
+    exitSelectionMode()
+})
+
+// 4. Clicco sulla parte grigia: esco senza cancellare niente
+overlay.addEventListener("click", function() {
+    exitSelectionMode()
+})
+
+function exitSelectionMode() {
+    document.body.classList.remove("selection-mode")
+    render(items)
+}
+
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js")
+}
