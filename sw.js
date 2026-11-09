@@ -1,5 +1,5 @@
 // Nome della cache: quando modifichi l'app cambia v1 in v2, v3...
-const CACHE_NAME = "shopping-list-v2"
+const CACHE_NAME = "shopping-list-v5"
 
 // I file da salvare per poter usare l'app senza connessione
 const FILES = [

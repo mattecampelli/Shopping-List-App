@@ -6,29 +6,58 @@
             <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
             <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
             <link rel="manifest" href="site.webmanifest">
-            <title>Shopping List App</title>
+            <title>Lista della Spesa</title>
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link rel="stylesheet" href="style.css">
             <script type="module" src="index.js"></script>
         </head>
         <body>
-            <div class="blob-1"></div>
-            <div class="blob-2"></div>
-            <div class="blob-3"></div>
+            <!-- I blob stanno dentro un contenitore fisso grande quanto lo schermo
+                 che taglia quello che esce (overflow: hidden) -->
+            <div class="blobs" aria-hidden="true">
+                <div class="blob-1"></div>
+                <div class="blob-2"></div>
+                <div class="blob-3"></div>
+            </div>
             <div id="overlay"></div>
             <div class="container">
-                <h1>Shopping List</h1>
-                <form id="form">
-                    <label for="input-el" class="visually-hidden">Prodotto da aggiungere</label>
-                    <input type="text" id="input-el" placeholder="Enter item">
-                    <div id="btn-container">
-                        <button id="add-btn" type="submit">ADD ITEM</button>
-                        <button type="button" id="select-btn">DELETE ITEM</button>
-                        <button type="button" id="delete-btn">DELETE ALL</button>
+
+                <!-- SCHERMATA 1: tutte le liste -->
+                <section id="home-view" class="view">
+                    <h1 tabindex="-1">Le mie liste</h1>
+                    <form id="new-list-form">
+                        <label for="list-title-input" class="visually-hidden">Titolo della nuova lista</label>
+                        <input type="text" id="list-title-input" placeholder="Titolo della nuova lista">
+                        <div class="btn-container">
+                            <button class="btn" type="submit">NUOVA LISTA</button>
+                            <button class="btn" type="button" id="select-lists-btn">ELIMINA LISTA</button>
+                        </div>
+                    </form>
+                    <p id="empty-msg">Ancora nessuna lista: creane una!</p>
+                    <ul id="lists-el"></ul>
+                    <button class="btn delete-selected-btn" type="button" id="delete-selected-lists-btn">ELIMINA SELEZIONATE</button>
+                </section>
+
+                <!-- SCHERMATA 2: la lista aperta (nascosta all'avvio) -->
+                <section id="list-view" class="view faded" hidden>
+                    <div class="top-bar">
+                        <button class="btn" type="button" id="back-btn">← TUTTE LE LISTE</button>
+                        <button class="btn" type="button" id="share-btn">CONDIVIDI</button>
                     </div>
-                </form>
-                <ul id="ul-el"></ul>
-                <button type="button" id="delete-selected-btn">DELETE SELECTED</button>
+                    <h1 id="list-title" tabindex="-1"></h1>
+                    <form id="form">
+                        <label for="input-el" class="visually-hidden">Prodotto da aggiungere</label>
+                        <input type="text" id="input-el" placeholder="Aggiungi un prodotto">
+                        <div class="btn-container">
+                            <button class="btn" type="submit">AGGIUNGI</button>
+                            <button class="btn" type="button" id="select-btn">ELIMINA</button>
+                            <button class="btn" type="button" id="delete-btn">SVUOTA LISTA</button>
+                        </div>
+                    </form>
+                    <ul id="ul-el"></ul>
+                    <button class="btn delete-selected-btn" type="button" id="delete-selected-btn">ELIMINA SELEZIONATI</button>
+                </section>
+
             </div>
         </body>
     </html>
