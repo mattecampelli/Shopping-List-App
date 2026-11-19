@@ -13,6 +13,7 @@ Il progetto è inoltre configurato per essere installato su dispositivi mobile c
 * Tasto ← TUTTE LE LISTE per tornare all’elenco di tutte le liste
 * Transizione morbida (dissolvenza) nel passaggio da una schermata all’altra
 * Condivisione di una lista con il tasto CONDIVIDI: chi apre il link riceve una copia della lista come nuova lista sua
+* Tasto IMPORTA LISTA: incollando il link ricevuto, la lista si aggiunge alle proprie liste anche nell’app installata sulla schermata Home
 * Aggiunta di nuovi prodotti alla lista, anche premendo Invio (submit tramite form)
 * I prodotti fatti solo di spazi non vengono aggiunti
 * Animazione di comparsa per ogni nuovo prodotto aggiunto alla lista
@@ -22,6 +23,7 @@ Il progetto è inoltre configurato per essere installato su dispositivi mobile c
 * Eliminazione di tutti i prodotti di una lista, con richiesta di conferma
 * Eliminazione di singoli prodotti con il tasto ELIMINA (modalità selezione)
 * Uscita dalla modalità selezione cliccando sulla parte grigia o premendo Esc
+* Modalità selezione utilizzabile da tastiera: Tab per spostarsi tra le caselle, Invio o Spazio per selezionarle
 * Funzionamento anche senza connessione grazie a un Service Worker
 * Interfaccia responsive adatta a telefoni, tablet e computer
 * Interfaccia interamente in italiano

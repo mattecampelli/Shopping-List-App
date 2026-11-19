@@ -274,6 +274,13 @@ button {
     padding: 10px;
 }
 
+/* Chi usa il tasto Tab deve vedere su quale casella si trova */
+#ul-el li:focus-visible,
+.list-card:focus-visible {
+    outline: 3px solid #5c2359;
+    outline-offset: 2px;
+}
+
 /* ---- Telefoni piccoli ---- */
 
 @media (max-width: 400px) {
