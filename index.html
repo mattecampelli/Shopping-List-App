@@ -30,6 +30,7 @@
                         <input type="text" id="list-title-input" placeholder="Titolo della nuova lista">
                         <div class="btn-container">
                             <button class="btn" type="submit">NUOVA LISTA</button>
+                            <button class="btn" type="button" id="import-btn">IMPORTA LISTA</button>
                             <button class="btn" type="button" id="select-lists-btn">ELIMINA LISTA</button>
                         </div>
                     </form>
@@ -56,6 +57,18 @@
                     </form>
                     <ul id="ul-el"></ul>
                     <button class="btn delete-selected-btn" type="button" id="delete-selected-btn">ELIMINA SELEZIONATI</button>
+                </section>
+
+                <!-- SCHERMATA 3: una lista ricevuta con un link, aperta nel browser (nascosta all'avvio) -->
+                <section id="shared-view" class="view faded" hidden>
+                    <h1 id="shared-title" tabindex="-1"></h1>
+                    <p id="shared-msg">Ti hanno mandato questa lista.</p>
+                    <ul id="shared-items"></ul>
+                    <div class="btn-container">
+                        <button class="btn" type="button" id="copy-for-app-btn">PORTA NELLA MIA APP</button>
+                    </div>
+                    <p id="shared-steps" hidden>Fatto! Ora apri l’app Lista della Spesa dalla schermata Home e premi IMPORTA LISTA.</p>
+                    <button class="btn" type="button" id="add-here-btn">USA LA LISTA QUI</button>
                 </section>
 
             </div>

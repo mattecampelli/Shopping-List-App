@@ -17,12 +17,14 @@ const homeView = document.getElementById("home-view")
 const newListForm = document.getElementById("new-list-form")
 const listTitleInput = document.getElementById("list-title-input")
 const selectListsBtn = document.getElementById("select-lists-btn")
+const importBtn = document.getElementById("import-btn")
 const listsEl = document.getElementById("lists-el")
 const emptyMsg = document.getElementById("empty-msg")
 const deleteSelectedListsBtn = document.getElementById("delete-selected-lists-btn")
 
 // ---- Elementi della LISTA APERTA ----
 const listView = document.getElementById("list-view")
+const topBar = document.querySelector(".top-bar")
 const backBtn = document.getElementById("back-btn")
 const shareBtn = document.getElementById("share-btn")
 const listTitleEl = document.getElementById("list-title")
@@ -33,12 +35,22 @@ const deleteBtn = document.getElementById("delete-btn")
 const ulEl = document.getElementById("ul-el")
 const deleteSelectedBtn = document.getElementById("delete-selected-btn")
 
+// ---- Elementi della LISTA RICEVUTA (link aperto nel browser) ----
+const sharedView = document.getElementById("shared-view")
+const sharedTitleEl = document.getElementById("shared-title")
+const sharedItemsEl = document.getElementById("shared-items")
+const copyForAppBtn = document.getElementById("copy-for-app-btn")
+const sharedStepsEl = document.getElementById("shared-steps")
+const addHereBtn = document.getElementById("add-here-btn")
+
 const overlay = document.getElementById("overlay")
 
 // Tutte le liste: [{ id: "...", title: "Spesa", items: ["latte", "pane"] }, ...]
 let lists = loadLists()
 // La lista aperta in questo momento (null = siamo nella home)
 let currentList = null
+// Il testo della lista ricevuta con un link (serve al tasto USA LA LISTA QUI)
+let receivedData = null
 
 renderLists()
 importSharedList()
@@ -145,7 +157,7 @@ listsEl.addEventListener("click", function(e) {
         return
     }
     if (document.body.classList.contains("selection-mode")) {
-        e.target.classList.toggle("selected")
+        toggleSelected(e.target)
     } else {
         openList(id)
     }
@@ -154,7 +166,7 @@ listsEl.addEventListener("click", function(e) {
 // ELIMINA LISTA: entro nella modalità selezione
 selectListsBtn.addEventListener("click", function() {
     if (lists.length > 0) {
-        document.body.classList.add("selection-mode")
+        enterSelectionMode(listsEl.querySelectorAll(".list-card"))
     }
 })
 
@@ -261,14 +273,26 @@ deleteBtn.addEventListener("click", function() {
 // 1. Premo ELIMINA: entro nella modalità selezione
 selectBtn.addEventListener("click", function() {
     if (currentList.items.length > 0) {
-        document.body.classList.add("selection-mode")
+        enterSelectionMode(ulEl.children)
     }
 })
 
 // 2. Clicco su una casella della lista: la seleziono o la deseleziono
 ulEl.addEventListener("click", function(e) {
     if (document.body.classList.contains("selection-mode") && e.target.tagName === "LI") {
-        e.target.classList.toggle("selected")
+        toggleSelected(e.target)
+    }
+})
+
+// 2b. Con la tastiera: Invio o Spazio su una casella fanno la stessa cosa del click
+//     (le liste della home sono <button>, quindi lì funziona già da solo)
+ulEl.addEventListener("keydown", function(e) {
+    if (document.body.classList.contains("selection-mode") && e.target.tagName === "LI") {
+        if (e.key === "Enter" || e.key === " ") {
+            // preventDefault: lo Spazio non deve far scorrere la pagina
+            e.preventDefault()
+            toggleSelected(e.target)
+        }
     }
 })
 
@@ -288,6 +312,32 @@ deleteSelectedBtn.addEventListener("click", function() {
 // MODALITÀ SELEZIONE (vale per prodotti e liste)
 // =====================================================
 
+// Entro nella modalità selezione. boxes = le caselle che si possono selezionare
+function enterSelectionMode(boxes) {
+    document.body.classList.add("selection-mode")
+    // inert = "spento": con Tab non si finisce più su quello che sta sotto il grigio
+    newListForm.inert = true
+    topBar.inert = true
+    form.inert = true
+    for (const box of boxes) {
+        // tabIndex = 0: adesso con Tab si arriva anche sulle caselle dei prodotti (<li>)
+        box.tabIndex = 0
+        // aria-pressed dice agli screen reader se la casella è selezionata
+        box.setAttribute("aria-pressed", "false")
+        if (box.tagName === "LI") {
+            box.setAttribute("role", "button")
+        }
+    }
+    // parto dalla prima casella
+    boxes[0].focus()
+}
+
+// Seleziono o deseleziono una casella (con il click o con la tastiera)
+function toggleSelected(box) {
+    box.classList.toggle("selected")
+    box.setAttribute("aria-pressed", box.classList.contains("selected"))
+}
+
 // 4. Clicco sulla parte grigia (o premo Esc): esco senza cancellare niente
 overlay.addEventListener("click", function() {
     exitSelectionMode()
@@ -301,10 +351,23 @@ document.addEventListener("keydown", function(e) {
 
 // Esco dalla modalità e ridisegno tutto (così spariscono le caselle selezionate)
 function exitSelectionMode() {
+    const wasSelecting = document.body.classList.contains("selection-mode")
     document.body.classList.remove("selection-mode")
+    // "riaccendo" quello che avevo spento entrando
+    newListForm.inert = false
+    topBar.inert = false
+    form.inert = false
     renderLists()
     if (currentList) {
         renderItems()
+    }
+    // se ero in modalità selezione, il focus torna sul tasto da cui ero partito
+    if (wasSelecting) {
+        if (currentList) {
+            selectBtn.focus()
+        } else {
+            selectListsBtn.focus()
+        }
     }
 }
 
@@ -322,7 +385,7 @@ shareBtn.addEventListener("click", function() {
 
     if (navigator.share) {
         // telefono (e alcuni browser desktop): si apre il menu "Condividi" (WhatsApp, Messaggi...)
-        navigator.share({ title: currentList.title, text: `Lista "${currentList.title}"`, url: link })
+        navigator.share({ title: currentList.title, text: `Lista "${currentList.title}". Apri il link e premi PORTA NELLA MIA APP.`, url: link })
             .catch(function(error) {
                 // AbortError = l'utente ha chiuso il menu: non è un errore vero
                 if (error.name !== "AbortError") {
@@ -335,35 +398,149 @@ shareBtn.addEventListener("click", function() {
     }
 })
 
-// All'avvio: se l'indirizzo contiene ?share=... aggiungo quella lista come lista NUOVA
+// true = l'app è aperta dall'icona sulla schermata Home (app installata)
+// false = è aperta dentro un browser (Safari, Chrome...)
+function isInstalledApp() {
+    return window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true
+}
+
+// All'avvio: se l'indirizzo contiene ?share=... qualcuno mi ha mandato una lista
 function importSharedList() {
     const params = new URLSearchParams(location.search)
     const sharedData = params.get("share")
     if (!sharedData) {
         return
     }
-    // tolgo ?share=... dall'indirizzo, così ricaricando la pagina non la importo di nuovo
-    history.replaceState(null, "", location.pathname)
+    if (isInstalledApp()) {
+        // app installata: aggiungo subito la lista come lista NUOVA
+        // tolgo ?share=... dall'indirizzo, così ricaricando la pagina non la importo di nuovo
+        history.replaceState(null, "", location.pathname)
+        addSharedList(sharedData)
+    } else {
+        // browser: qui NON salvo niente, perché il browser ha un localStorage diverso
+        // da quello dell'app installata. Mostro la lista e il tasto per portarla nell'app.
+        showSharedPreview(sharedData)
+    }
+}
 
+// Mostra la schermata "lista ricevuta" (solo da leggere)
+function showSharedPreview(sharedData) {
+    const shared = readSharedList(sharedData)
+    if (!shared) {
+        alert("Il link della lista non è valido")
+        return
+    }
+    receivedData = sharedData
+    sharedTitleEl.textContent = shared.title
+    sharedItemsEl.innerHTML = ""
+    for (let i = 0; i < shared.items.length; i++) {
+        sharedItemsEl.append(createItemEl(shared.items[i], i))
+    }
+    switchView(homeView, sharedView)
+}
+
+// PORTA NELLA MIA APP: copio il link negli appunti del telefono
+// e mostro cosa fare dopo (aprire l'app e premere IMPORTA LISTA)
+copyForAppBtn.addEventListener("click", function() {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(location.href)
+            .then(function() {
+                sharedStepsEl.hidden = false
+            })
+            .catch(function() {
+                // se il telefono non lascia copiare da solo, mostro il link da copiare a mano
+                prompt("Copia questo link:", location.href)
+            })
+    } else {
+        prompt("Copia questo link:", location.href)
+    }
+})
+
+// USA LA LISTA QUI: per chi non ha l'app installata, aggiungo la lista in questo browser
+addHereBtn.addEventListener("click", function() {
+    sharedView.classList.add("faded")
+    sharedView.hidden = true
+    history.replaceState(null, "", location.pathname)
+    addSharedList(receivedData)
+})
+
+// IMPORTA LISTA: la lista copiata con "PORTA NELLA MIA APP" si aggiunge alle MIE liste.
+// Serve perché il link si apre nel browser, che ha un localStorage diverso
+// da quello dell'app installata sulla schermata Home.
+importBtn.addEventListener("click", function() {
+    if (navigator.clipboard && navigator.clipboard.readText) {
+        // 1. provo a leggere gli appunti (l'iPhone mostra il fumetto "Incolla")
+        navigator.clipboard.readText()
+            .then(function(text) {
+                if (!importFromText(text)) {
+                    askForLink()
+                }
+            })
+            .catch(function() {
+                askForLink()
+            })
+    } else {
+        askForLink()
+    }
+})
+
+// 2. Riserva: se non riesco a leggere gli appunti, chiedo di incollare il link a mano
+function askForLink() {
+    const pastedText = prompt("Incolla qui il link della lista che ti hanno mandato:")
+    if (!pastedText) {
+        return
+    }
+    if (!importFromText(pastedText)) {
+        alert("Il link della lista non è valido")
+    }
+}
+
+// Cerca un link ?share=... dentro un testo e importa la lista.
+// Restituisce true se nel testo c'era un link, false se non c'era
+function importFromText(text) {
+    // cerco dove inizia ?share=... (funziona anche se nel testo c'è tutto il messaggio)
+    const start = text.indexOf("?share=")
+    if (start === -1) {
+        return false
+    }
+    // prendo da ?share= in poi, fermandomi al primo spazio o a capo
+    const query = text.slice(start).split(" ")[0].split("\n")[0]
+    const params = new URLSearchParams(query)
+    addSharedList(params.get("share"))
+    return true
+}
+
+// Legge una lista condivisa (testo JSON) e controlla che sia valida.
+// Restituisce { title, items } oppure null se i dati non vanno bene
+function readSharedList(sharedData) {
     try {
         const shared = JSON.parse(sharedData)
         if (typeof shared.title !== "string" || !Array.isArray(shared.items)) {
             throw new Error("Lista condivisa non valida")
         }
-        const newList = {
-            id: createId(),
+        return {
             title: shared.title.trim() || "Lista condivisa",
             // tengo solo i prodotti che sono testo
             items: shared.items.filter(item => typeof item === "string")
         }
-        lists.push(newList)
-        saveLists()
-        renderLists()
-        openList(newList.id)
     } catch (error) {
         console.error(error)
-        alert("Il link della lista non è valido")
+        return null
     }
+}
+
+// Aggiunge una lista condivisa (testo JSON) come lista NUOVA e la apre
+function addSharedList(sharedData) {
+    const shared = readSharedList(sharedData)
+    if (!shared) {
+        alert("Il link della lista non è valido")
+        return
+    }
+    const newList = { id: createId(), title: shared.title, items: shared.items }
+    lists.push(newList)
+    saveLists()
+    renderLists()
+    openList(newList.id)
 }
 
 if ("serviceWorker" in navigator) {

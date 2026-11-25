@@ -13,6 +13,7 @@ Il progetto è inoltre configurato per essere installato su dispositivi mobile c
 * Tasto ← TUTTE LE LISTE per tornare all’elenco di tutte le liste
 * Transizione morbida (dissolvenza) nel passaggio da una schermata all’altra
 * Condivisione di una lista con il tasto CONDIVIDI: chi apre il link riceve una copia della lista come nuova lista sua
+* Chi apre il link nel browser vede la lista ricevuta e, con PORTA NELLA MIA APP e IMPORTA LISTA, la aggiunge alle proprie liste anche nell’app installata sulla schermata Home
 * Aggiunta di nuovi prodotti alla lista, anche premendo Invio (submit tramite form)
 * I prodotti fatti solo di spazi non vengono aggiunti
 * Animazione di comparsa per ogni nuovo prodotto aggiunto alla lista
@@ -22,6 +23,7 @@ Il progetto è inoltre configurato per essere installato su dispositivi mobile c
 * Eliminazione di tutti i prodotti di una lista, con richiesta di conferma
 * Eliminazione di singoli prodotti con il tasto ELIMINA (modalità selezione)
 * Uscita dalla modalità selezione cliccando sulla parte grigia o premendo Esc
+* Modalità selezione utilizzabile da tastiera: Tab per spostarsi tra le caselle, Invio o Spazio per selezionarle
 * Funzionamento anche senza connessione grazie a un Service Worker
 * Interfaccia responsive adatta a telefoni, tablet e computer
 * Interfaccia interamente in italiano
@@ -206,15 +208,16 @@ const params = new URLSearchParams({
 ```
 
 2. Sul telefono si apre il menu "Condividi" (`navigator.share`) per mandare il link su WhatsApp, Messaggi ecc.; sui browser che non lo supportano compare una finestra con il link da copiare.
-3. Chi apre il link avvia l’app normalmente: all’avvio l’app legge `?share=...` dall’indirizzo, controlla che i dati siano validi, aggiunge la lista come nuova lista con un nuovo `id` e la apre.
-4. La query string viene poi tolta dall’indirizzo (`history.replaceState`), così ricaricando la pagina la lista non viene importata una seconda volta.
+3. Chi apre il link avvia l’app: all’avvio l’app legge `?share=...` dall’indirizzo e controlla che i dati siano validi.
+4. Se l’app è aperta dalla schermata Home (app installata), la lista viene aggiunta subito come nuova lista con un nuovo `id` e aperta; la query string viene tolta dall’indirizzo (`history.replaceState`), così ricaricando la pagina la lista non viene importata una seconda volta.
+5. Se invece il link si apre nel browser, compare la schermata "lista ricevuta": il tasto PORTA NELLA MIA APP copia il link negli appunti (`navigator.clipboard.writeText`). Poi si apre l’app dalla schermata Home e si preme IMPORTA LISTA, che legge gli appunti (`navigator.clipboard.readText`) e aggiunge la lista alle proprie. Chi non ha l’app installata può usare USA LA LISTA QUI.
 
 I prodotti vengono sempre inseriti con `textContent`, quindi un link modificato non può inserire HTML nella pagina.
 
 Limiti da conoscere:
 
 * aprendo due volte lo stesso link si ottengono due copie della lista;
-* su iPhone, se l’app è stata aggiunta alla schermata Home, il link si apre in Safari, che ha un localStorage separato da quello dell’app installata.
+* su iPhone, se l’app è stata aggiunta alla schermata Home, il link si apre in Safari, che ha un localStorage separato da quello dell’app installata: per questo servono i due tasti PORTA NELLA MIA APP e IMPORTA LISTA.
 
 ## Grafica e responsive
 

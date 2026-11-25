@@ -87,7 +87,8 @@ button {
 
 /* ---- Lista dei prodotti ---- */
 
-#ul-el {
+#ul-el,
+#shared-items {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
@@ -96,7 +97,8 @@ button {
     margin: 10px 0;
 }
 
-#ul-el li {
+#ul-el li,
+#shared-items li {
     list-style-type: none;
     background-color: white;
     color: black;
@@ -146,9 +148,19 @@ button {
     }
 }
 
-#empty-msg {
+#empty-msg,
+#shared-msg,
+#shared-steps {
     text-align: center;
     color: #5c2359;
+}
+
+/* ---- Schermata della lista ricevuta ---- */
+
+/* il tasto secondario sta sotto, al centro (come ELIMINA SELEZIONATI) */
+#add-here-btn {
+    display: block;
+    margin: 10px auto 0;
 }
 
 /* ---- Schermata della lista aperta ---- */
@@ -272,6 +284,13 @@ button {
 .list-card.selected {
     border: 4px solid #c77f00;
     padding: 10px;
+}
+
+/* Chi usa il tasto Tab deve vedere su quale casella si trova */
+#ul-el li:focus-visible,
+.list-card:focus-visible {
+    outline: 3px solid #5c2359;
+    outline-offset: 2px;
 }
 
 /* ---- Telefoni piccoli ---- */
